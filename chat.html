@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<title>GroupChat</title>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font: 13px Helvetica, Arial;
+}
+form {
+    background: black;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+form input {
+    padding: 10px;
+    width: 85%;
+    margin: 2px 0;
+}
+form button {
+    float: right;
+    background-color: red;
+    border: none;
+    border-radius: 5px;
+    padding: 1em 0;
+    width: 14%;
+    margin: 3px 0;
+}
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#messages li {
+    padding: 5px 10px;
+}
+#messages li:nth-child(odd) {
+    background: #eee;
+}
+</style>
+</head>
+
+<body>
+<ul id="messages"></ul>
+
+<form id="msg-form">
+    <input id="m" autocomplete="off"/>
+    <button>Send</button>
+</form>
+
+<script src="https://unpkg.com/jquery"></script>
+<script>
+//Client-side
+const urlParts = document.URL.split("/")
+const roomName = urlParts[urlParts.length - 1]
+const ws = new WebSocket(`ws://localhost:3000/chat/${roomName}`)
+
+const name = prompt("Choose chatname:")
+/** called when connection opens, sends join info to server. */
+ws.onopen =evt=>{
+    console.log("open", evt)
+    ws.send(JSON.stringify({type: "join", name: name}))
+}
+/** called when msg received from server; displays it. */
+ws.onmessage =evt=>{
+    console.log("message", evt)
+    let msg = JSON.parse(evt.data)
+    let item
+    if (msg.type === "note") item = $(`<li><i>${msg.text}</i></li>`)
+    else if (msg.type === "chat") item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`)
+    else return console.error(`bad message: ${msg}`)
+    $('#messages').append(item)
+}
+ws.onerror =evt=>console.error(`err ${evt}`)//called on error; logs it
+ws.onclose =evt=>console.log("close", evt)//called on connection-closed; logs it
+//send message when hits Send 
+$('form').submit(evt=>{//event handler for form submission:send user-entered message to server via WebSocket
+    evt.preventDefault()
+    ws.send(JSON.stringify({type:"chat", text: $("#m").val()}))
+    $('#m').val('')
+})
+</script>
+</body>
+</html>
