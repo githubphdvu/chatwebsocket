@@ -24,4 +24,4 @@ app.ws('/chat/:roomName',(ws, req, next)=>{//when connection is established at t
 app.get('/:roomName',(req,res,next)=>res.sendFile(`${__dirname}/index.html`))
 
 const port = process.env.PORT || 3000
-server.listen(port, () =>console.log(`Server started on port ${port}`))
+app.listen(port, () =>console.log(`Server started on port ${port}`))
