@@ -5,7 +5,7 @@
 const express = require('express')
 const app = express()
 const wsExpress = require('express-ws')(app)
-const ChatUser = require('./ChatUser')
+const ChatUser = require('./chatuser')
 app.ws('/chat/:roomName',(ws, req, next)=>{//when connection is established at this endpoint,create chat user
     try {
         const user = new ChatUser(ws.send.bind(ws),req.params.roomName)
