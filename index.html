@@ -58,7 +58,8 @@ form button {
 //Client-side
 const urlParts = document.URL.split("/")
 const roomName = urlParts[urlParts.length - 1]
-const ws = new WebSocket(`ws://localhost:3000/chat/${roomName}`)
+//const ws = new WebSocket(`ws://localhost:3000/chat/${roomName}`)
+const ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/chat/${roomName}`)
 
 const name = prompt("Choose chatname:")
 /** called when connection opens, sends join info to server. */
