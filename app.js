@@ -21,6 +21,7 @@ app.ws('/chat/:roomName',(ws, req, next)=>{//when connection is established at t
     catch (err) { console.error(err) }
 })
 //frontend: at this endpoint,serve chat.html
-app.get('/:roomName',(req,res,next)=>res.sendFile(`${__dirname}/chat.html`))
+app.get('/:roomName',(req,res,next)=>res.sendFile(`${__dirname}/index.html`))
 
-app.listen(3000,()=>console.log("Server started on localhost:3000"))
+const port = process.env.PORT || 3000
+server.listen(port, () =>console.log(`Server started on port ${port}`))
